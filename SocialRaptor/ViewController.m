@@ -13,6 +13,8 @@
 @end
 
 @implementation ViewController
+@synthesize userInput;
+@synthesize pwInput;
 
 - (void)viewDidLoad
 {
@@ -26,4 +28,13 @@
     // Dispose of any resources that can be recreated.
 }
 
+- (IBAction)dismissKeyboard:(id)sender {
+    [userInput resignFirstResponder];
+    [pwInput resignFirstResponder];
+}
+
+- (IBAction)dismissKeyB:(id)sender {
+    [userInput resignFirstResponder];
+    [pwInput resignFirstResponder];
+}
 @end

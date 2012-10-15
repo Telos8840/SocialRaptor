@@ -10,4 +10,10 @@
 
 @interface ViewController : UIViewController
 
+@property (weak, nonatomic) IBOutlet UITextField *userInput;
+
+@property (weak, nonatomic) IBOutlet UITextField *pwInput;
+
+- (IBAction)dismissKeyboard:(id)sender;
+
 @end
