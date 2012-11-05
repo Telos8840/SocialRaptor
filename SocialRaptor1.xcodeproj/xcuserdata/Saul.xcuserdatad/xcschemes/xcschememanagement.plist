@@ -4,7 +4,7 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
-		<key>SocialRaptor.xcscheme</key>
+		<key>SocialRaptor1.xcscheme</key>
 		<dict>
 			<key>orderHint</key>
 			<integer>0</integer>
@@ -12,7 +12,7 @@
 	</dict>
 	<key>SuppressBuildableAutocreation</key>
 	<dict>
-		<key>C72495F0162BD12B00EE2525</key>
+		<key>CD7A27F2162A55D30055C539</key>
 		<dict>
 			<key>primary</key>
 			<true/>

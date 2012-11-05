@@ -1,14 +1,14 @@
 //
-//  AppDelegate.m
-//  SocialRaptor
+//  projectAppDelegate.m
+//  SocialRaptor1
 //
-//  Created by Saul Guardado on 10/14/12.
-//  Copyright (c) 2012 Saul Guardado. All rights reserved.
+//  Created by Rachael Koestartyo on 10/13/12.
+//  Copyright (c) 2012 CS480. All rights reserved.
 //
 
-#import "AppDelegate.h"
+#import "projectAppDelegate.h"
 
-@implementation AppDelegate
+@implementation projectAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {

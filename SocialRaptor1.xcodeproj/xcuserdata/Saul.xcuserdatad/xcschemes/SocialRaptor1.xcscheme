@@ -14,10 +14,10 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "C72495F0162BD12B00EE2525"
-               BuildableName = "SocialRaptor.app"
-               BlueprintName = "SocialRaptor"
-               ReferencedContainer = "container:SocialRaptor.xcodeproj">
+               BlueprintIdentifier = "CD7A27F2162A55D30055C539"
+               BuildableName = "SocialRaptor1.app"
+               BlueprintName = "SocialRaptor1"
+               ReferencedContainer = "container:SocialRaptor1.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -32,10 +32,10 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "C72495F0162BD12B00EE2525"
-            BuildableName = "SocialRaptor.app"
-            BlueprintName = "SocialRaptor"
-            ReferencedContainer = "container:SocialRaptor.xcodeproj">
+            BlueprintIdentifier = "CD7A27F2162A55D30055C539"
+            BuildableName = "SocialRaptor1.app"
+            BlueprintName = "SocialRaptor1"
+            ReferencedContainer = "container:SocialRaptor1.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -51,10 +51,10 @@
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "C72495F0162BD12B00EE2525"
-            BuildableName = "SocialRaptor.app"
-            BlueprintName = "SocialRaptor"
-            ReferencedContainer = "container:SocialRaptor.xcodeproj">
+            BlueprintIdentifier = "CD7A27F2162A55D30055C539"
+            BuildableName = "SocialRaptor1.app"
+            BlueprintName = "SocialRaptor1"
+            ReferencedContainer = "container:SocialRaptor1.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -69,10 +69,10 @@
       <BuildableProductRunnable>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "C72495F0162BD12B00EE2525"
-            BuildableName = "SocialRaptor.app"
-            BlueprintName = "SocialRaptor"
-            ReferencedContainer = "container:SocialRaptor.xcodeproj">
+            BlueprintIdentifier = "CD7A27F2162A55D30055C539"
+            BuildableName = "SocialRaptor1.app"
+            BlueprintName = "SocialRaptor1"
+            ReferencedContainer = "container:SocialRaptor1.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
