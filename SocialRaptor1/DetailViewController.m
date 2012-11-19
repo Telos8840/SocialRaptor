@@ -8,6 +8,7 @@
 
 #import "DetailViewController.h"
 #import "TableTab1.h"
+#import "CustomNavController.h"
 
 @interface DetailViewController ()
 
@@ -62,15 +63,23 @@
         via.text = [NSString stringWithFormat:@"via %@",service];
         
         //tweetDate.text = [NSString stringWithFormat:@"%@",tweetedDate];
+        NSString * timeStampString =[activity objectForKey:@"dateTime"];
+        NSTimeInterval _interval=[timeStampString doubleValue];
+        NSDate *date = [NSDate dateWithTimeIntervalSince1970:_interval];
+        NSDateFormatter *_formatter=[[NSDateFormatter alloc]init];
+        [_formatter setDateFormat:@"MM/dd/yyyy HH:mm:ss"];
+        NSString *_date=[_formatter stringFromDate:date];
+        tweetDate.text = [NSString stringWithFormat:@"%@", _date];
         
-        //dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            //NSString *imageUrl = [[activity objectForKey:@"user"] objectForKey:@"profile_image_url"];
-            //NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:imageUrl]];
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSString *imageUrl = [activity objectForKey:@"imageURL"];
+            NSData *data = [NSData dataWithContentsOfURL:[NSURL URLWithString:imageUrl]];
             
-            //dispatch_async(dispatch_get_main_queue(), ^{
-            //    profileImage.image = [UIImage imageWithData:data];
-            //});
-        //});
+            dispatch_async(dispatch_get_main_queue(), ^{
+                profileImage.image = [UIImage imageWithData:data];
+            });
+        });
     }
 }
 

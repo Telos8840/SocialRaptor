@@ -9,12 +9,13 @@
 #import "updateViewController.h"
 
 
-@interface updateViewController () 
+@interface updateViewController ()
 
 @end
 
 @implementation updateViewController
-@synthesize container, updateTextField, toolbar, camera, update, updateLabel;
+@synthesize container, updateTextView, toolbar, navbar, camera, update, updateLabel;
+NSUInteger charCount;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -25,41 +26,61 @@
     return self;
 }
 
-- (void)viewDidLoad
-{
-    [super viewDidLoad];
+- (void)viewWillAppear:(BOOL)animated {
+    //adds custom background to navbar and toolbar
+    UIImage *navBarBG = [[UIImage imageNamed:@"navBarBG-rounded.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+    
+    [[UINavigationBar appearance] setBackgroundImage:navBarBG forBarMetrics:UIBarMetricsDefault];
+    
+    [toolbar setBackgroundImage:[UIImage imageNamed:@"toolbarBG-rounded.png"] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
+    
+    updateTextView.delegate = self;
+    //container.bounds = CGRectMake(0, 0, 0, 0);
 	// Do any additional setup after loading the view.
     
     [UIView beginAnimations:nil context:NULL];
-    [UIView setAnimationDuration:0.35f];
-    
-    //change text field height
-    CGRect textFrame = updateTextField.frame;
-    textFrame.size.height = 180;
-    textFrame.origin.y = -160;
-    [container setFrame:textFrame];
+    [UIView setAnimationDuration:0.5f];
+    //container.bounds = CGRectMake(20, 52, 280, 245);
+    //CGRect frame = container.bounds;
+    //frame.origin.x = -20;
+    //frame.origin.y = 52;
+    //[container setFrame:frame];
     [UIView commitAnimations];
-    updateTextField.frame = textFrame;
-    [updateTextField becomeFirstResponder];
+    
+    [updateTextView becomeFirstResponder];
     
     //changes keyboard to twitter type keyboard
     //updateTextField.keyboardType = UIKeyboardTypeTwitter;
     
     //adds rounded corners and shadow behind container
-//    container.layer.cornerRadius = 8;
-//    container.layer.masksToBounds = NO;
+    container.layer.cornerRadius = 11;
+    container.layer.masksToBounds = NO;
     container.layer.shadowOffset = CGSizeMake(-10, 10);
     container.layer.shadowRadius = 5;
     container.layer.shadowOpacity = 0.5;
     
-    //adds buttons to toolbar
-    camera = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCamera target:self action:nil];
-    UIBarButtonItem *space = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
-    update = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemCompose target:self action:@selector(updateStatus)];
-    
-    NSArray *toolbarItems = [NSArray arrayWithObjects:camera, space, update, nil];
-    [toolbar setItems:toolbarItems animated:NO];
+    update.enabled = NO;
+    updateLabel.text = @"";
+}
 
+- (void)textViewDidChange:(UITextView *)textView {
+    //enable post button if user enters text
+    update.enabled = YES;
+    updateLabel.textColor = [UIColor blackColor];
+    
+    if ([updateTextView.text length] == 0 || [updateTextView.text length] > 140) {
+        update.enabled = NO;
+        updateLabel.text = @"";
+        updateLabel.textColor = [UIColor redColor];
+    }
+    
+    //counts the number of characters user has entered and outputs to label
+    charCount = [updateTextView.text length];
+    updateLabel.text = [NSString stringWithFormat:@"%u", charCount];
+}
+
+- (void)textViewDidEndEditing:(UITextView *)textView {
+    update.enabled = NO;
 }
 
 - (void)didReceiveMemoryWarning
@@ -68,22 +89,26 @@
     // Dispose of any resources that can be recreated.
 }
 
-- (void)updateStatus
-{
+- (IBAction)getPictures:(id)sender {
+}
+
+- (IBAction)postUpdate:(id)sender {
     NSString *message = [[NSString alloc] initWithFormat:@"Status posted!"];
+    updateTextView.text = @"";
     [updateLabel setText:message];
     //NSLog(@"Update: %@", [updateTextField text]);
-    [updateTextField resignFirstResponder];
+    [updateTextView resignFirstResponder];
 }
 
-- (IBAction)dismissKeyboard:(id)sender
-{
-    [updateTextField resignFirstResponder];
+- (IBAction)dismissKeyboard:(id)sender {
+    [updateTextView resignFirstResponder];
 }
 
-- (IBAction)cancel
-{
-    updateTextField.text = @"";
+- (IBAction)cancel {
+    [updateTextView resignFirstResponder];
+    updateTextView.text = @"";
+    updateLabel.text = @"";
+    charCount = 0;
 }
 
 @end

@@ -9,11 +9,14 @@
 #import "TableTab1.h"
 #import "DetailViewController.h"
 #import "projectViewController.h"
+#import "CustomNavController.h"
 
 @interface TableTab1 () {
     NSMutableArray *_objects;
 }
+-(UIImage *)selectedBackgroundImageForRowAtIndexPath:(NSIndexPath *)indexPath;
 @end
+
 
 @implementation TableTab1
 
@@ -69,15 +72,20 @@
         cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
     }
     
+    UIImageView *selectedBackgroundView=[[UIImageView alloc] initWithFrame:cell.frame];
+    selectedBackgroundView.image=[self selectedBackgroundImageForRowAtIndexPath:indexPath];
+    cell.selectedBackgroundView=selectedBackgroundView;
+    
     NSDictionary *activity = [activities objectAtIndex:indexPath.row];
     
     NSString *text = [activity objectForKey: @"content"];
     NSString *author = [activity objectForKey: @"author"];
     cell.textLabel.text = text;
     cell.detailTextLabel.text = [NSString stringWithFormat: @"by %@", author];
-    //NSString *imageUrl = [[activity objectForKey: @"user"] objectForKey: @"profile_image_url"];
-    //NSData *data = [NSData dataWithContentsOfURL: [NSURL URLWithString: imageUrl]];
-    //cell.imageView.image = [UIImage imageWithData:data];
+    
+    NSString *imageUrl = [activity objectForKey: @"imageURL"];
+    NSData *data = [NSData dataWithContentsOfURL: [NSURL URLWithString: imageUrl]];
+    cell.imageView.image = [UIImage imageWithData: data];
     return cell;
 }
 
@@ -101,6 +109,11 @@
 //    return cell;
 //}
 
+-(UIImage *)selectedBackgroundImageForRowAtIndexPath:(NSIndexPath *)indexPath{
+    UIImage *background=[UIImage imageNamed:@"cellbg3click.png"];
+    return background;
+}
+
 
 - (void)awakeFromNib
 {
@@ -112,6 +125,12 @@
     [super viewDidLoad];
     //[self fetchTweets];
     [self requestActivity];
+    UIImage *img = [UIImage imageNamed:@"cellbg3.png"];
+	[[self tableView] setBackgroundColor:[UIColor colorWithPatternImage:img]];
+    
+    
+    UINavigationBar *bar = [self.navigationController navigationBar];
+    [bar setBackgroundImage:[UIImage imageNamed:@"Plain_green_background.jpg"] forBarMetrics:UIBarMetricsDefault];
 }
 
 /*- (void)viewDidLoad
@@ -156,18 +175,6 @@
         detailController.detailItem = activity;
     }
 }
-
-//- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
-//{
-//    if ([segue.identifier isEqualToString:@"showTweet"]) {
-//        
-//        NSInteger row = [[self tableView].indexPathForSelectedRow row];
-//        NSDictionary *tweet = [tweets objectAtIndex:row];
-//        
-//        DetailViewController *detailController = segue.destinationViewController;
-//        detailController.detailItem = tweet;
-//    }
-//}
 
 #pragma mark - Table View
 

@@ -9,14 +9,17 @@
 #import <UIKit/UIKit.h>
 #import <QuartzCore/QuartzCore.h>
 
-@interface updateViewController : UIViewController
-@property (weak, nonatomic) IBOutlet UIView *container;
-@property (weak, nonatomic) IBOutlet UITextField *updateTextField;
+@interface updateViewController : UIViewController <UITextViewDelegate>
+@property (strong, retain) IBOutlet UIView *container;
 @property (weak, nonatomic) IBOutlet UIToolbar *toolbar;
+@property (weak, nonatomic) IBOutlet UINavigationItem *navbar;
 @property (strong, retain) IBOutlet UIBarButtonItem *camera;
 @property (strong, retain) IBOutlet UIBarButtonItem * update;
 @property (weak, nonatomic) IBOutlet UILabel *updateLabel;
+@property (strong, nonatomic) IBOutlet UITextView *updateTextView;
 
+- (IBAction)getPictures:(id)sender;
+- (IBAction)postUpdate:(id)sender;
 - (IBAction)dismissKeyboard:(id)sender;
 - (IBAction)cancel;
 

@@ -21,7 +21,7 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "SocialRaptor1/DetailViewController.h"
-         timestampString = "373348700.571768"
+         timestampString = "373785574.488487"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
          startingLineNumber = "22"
@@ -30,15 +30,15 @@
          landmarkType = "19">
       </FileBreakpoint>
       <FileBreakpoint
-         shouldBeEnabled = "Yes"
+         shouldBeEnabled = "No"
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "SocialRaptor1/TableTab1.m"
-         timestampString = "373264315.324139"
+         timestampString = "374478814.734817"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "204"
-         endingLineNumber = "204"
+         startingLineNumber = "211"
+         endingLineNumber = "211"
          landmarkName = "-tableView:commitEditingStyle:forRowAtIndexPath:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -47,11 +47,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "SocialRaptor1/projectViewController.m"
-         timestampString = "373373523.707729"
+         timestampString = "374047220.433703"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "68"
-         endingLineNumber = "68"
+         startingLineNumber = "70"
+         endingLineNumber = "70"
          landmarkName = "-login"
          landmarkType = "5">
       </FileBreakpoint>
@@ -60,11 +60,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "SocialRaptor1/projectViewController.m"
-         timestampString = "373372875.559803"
+         timestampString = "373845751.937728"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "60"
-         endingLineNumber = "60"
+         startingLineNumber = "62"
+         endingLineNumber = "62"
          landmarkName = "-login"
          landmarkType = "5">
       </FileBreakpoint>
@@ -73,11 +73,11 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "SocialRaptor1/ContactTab2.m"
-         timestampString = "373347081.135431"
+         timestampString = "374470480.739615"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "58"
-         endingLineNumber = "58"
+         startingLineNumber = "59"
+         endingLineNumber = "59"
          landmarkName = "-collectionView:cellForItemAtIndexPath:"
          landmarkType = "5">
       </FileBreakpoint>
@@ -86,12 +86,25 @@
          ignoreCount = "0"
          continueAfterRunningActions = "No"
          filePath = "SocialRaptor1/projectViewController.m"
-         timestampString = "373373277.999379"
+         timestampString = "373845751.937728"
          startingColumnNumber = "9223372036854775807"
          endingColumnNumber = "9223372036854775807"
-         startingLineNumber = "63"
-         endingLineNumber = "63"
+         startingLineNumber = "65"
+         endingLineNumber = "65"
          landmarkName = "-login"
+         landmarkType = "5">
+      </FileBreakpoint>
+      <FileBreakpoint
+         shouldBeEnabled = "No"
+         ignoreCount = "0"
+         continueAfterRunningActions = "No"
+         filePath = "SocialRaptor1/ContactTab2.m"
+         timestampString = "374469928.512925"
+         startingColumnNumber = "9223372036854775807"
+         endingColumnNumber = "9223372036854775807"
+         startingLineNumber = "67"
+         endingLineNumber = "67"
+         landmarkName = "-collectionView:cellForItemAtIndexPath:"
          landmarkType = "5">
       </FileBreakpoint>
    </FileBreakpoints>

@@ -37,6 +37,9 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     servicesArray = [[NSArray alloc] init];
     miscArray = [[NSArray alloc] init];
+    
+    UIImageView *boxBackView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"green_background.gif"]];
+    [self.tableView setBackgroundView:boxBackView];
 }
 
 - (void)didReceiveMemoryWarning
@@ -92,6 +95,10 @@
         // Configure the cell...
         cell.textLabel.text = [servicesArray objectAtIndex:indexPath.row];
         //NSLog(@"%d", indexPath.row);
+        
+        
+        [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
+        [selectedIndices addObject:[NSNumber numberWithInt:indexPath.row]];
     }
     else if(indexPath.section ==1)
     {
@@ -102,12 +109,6 @@
         cell.textLabel.text = [miscArray objectAtIndex:indexPath.row];
         //NSLog(@"%d", indexPath.row);
     }
-//    else if(indexPath.section == 2)
-//    {
-//        CellIdentifier = @"logoutCell";
-//        cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-//    }
-    
     
     return cell;
 }
@@ -169,13 +170,27 @@
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    // Navigation logic may go here. Create and push another view controller.
-    /*
-     <#DetailViewController#> *detailViewController = [[<#DetailViewController#> alloc] initWithNibName:@"<#Nib name#>" bundle:nil];
-     // ...
-     // Pass the selected object to the new view controller.
-     [self.navigationController pushViewController:detailViewController animated:YES];
-     */
+    switch(indexPath.section)
+    {
+        case 0:
+        {
+            UITableViewCell *selectedCell = [tableView cellForRowAtIndexPath:indexPath];
+            
+            if ([selectedCell accessoryType] == UITableViewCellAccessoryNone) {
+                [selectedCell setAccessoryType:UITableViewCellAccessoryCheckmark];
+                [selectedIndices addObject:[NSNumber numberWithInt:indexPath.row]];
+            } else {
+                [selectedCell setAccessoryType:UITableViewCellAccessoryNone];
+                [selectedIndices removeObject:[NSNumber numberWithInt:indexPath.row]];
+            }
+            
+            [tableView deselectRowAtIndexPath:indexPath animated:NO];
+            break;
+        }
+        case 1:
+            
+            break;
+    }
 }
 
 @end

@@ -16,3 +16,5 @@
 - (IBAction)logout;
 
 @end
+
+NSMutableArray *selectedIndices;

@@ -10,9 +10,20 @@
 
 @implementation projectAppDelegate
 
+@synthesize window = _window;
+
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
-    // Override point for customization after application launch.
+    //UITabBar
+    UIImage *tabBackground=[[UIImage imageNamed:@"tab_bg.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
+    [[UITabBar appearance] setBackgroundImage:tabBackground];
+    [[UITabBar appearance] setSelectionIndicatorImage:[UIImage imageNamed:@"tab_select_indicator.png"]];
+    
+    //UIBarButtonItem BackButton
+    UIImage *buttonBack30=[[UIImage imageNamed:@"button_back_textured_30.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 13, 0, 5)];
+    [[UIBarButtonItem appearanceWhenContainedIn:[UINavigationBar class], nil] setBackButtonBackgroundImage:buttonBack30 forState:UIControlStateNormal barMetrics:UIBarMetricsDefault];
+    
+    [self.window makeKeyAndVisible];
     return YES;
 }
 							

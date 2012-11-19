@@ -1,18 +1,18 @@
 //
-//  TabBarViewController.m
+//  CustomNavController.m
 //  SocialRaptor1
 //
-//  Created by Rachael Koestartyo on 10/13/12.
+//  Created by Rachael Koestartyo on 11/4/12.
 //  Copyright (c) 2012 CS480. All rights reserved.
 //
 
-#import "TabBarViewController.h"
+#import "CustomNavController.h"
 
-@interface TabBarViewController ()
+@interface CustomNavController ()
 
 @end
 
-@implementation TabBarViewController
+@implementation CustomNavController
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -26,7 +26,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-	// Do any additional setup after loading the view.
+	//self.navigationController.navigationBar.backgroundColor =[UIColor redColor];
 }
 
 - (void)didReceiveMemoryWarning

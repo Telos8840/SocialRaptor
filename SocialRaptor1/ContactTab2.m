@@ -30,6 +30,7 @@
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
     labelName = [jsonContactObjects objectAtIndex:1];
+    images = [jsonContactObjects objectAtIndex:1];
     
 }
 
@@ -60,6 +61,10 @@
     //NSLog(@"%@",[labelName objectAtIndex:indexPath.item]);
     
     myCell.name.text = [[labelName objectAtIndex:indexPath.item] objectForKey:@"name"];
+    
+    NSString *imageUrl = [[images objectAtIndex:indexPath.item] objectForKey: @"imageURL"];
+    NSData *data = [NSData dataWithContentsOfURL: [NSURL URLWithString: imageUrl]];
+    myCell.profpic.image = [UIImage imageWithData: data];
     
     return myCell;
 }

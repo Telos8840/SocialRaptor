@@ -43,6 +43,7 @@
 @implementation projectViewController
 
 @synthesize username, password, portrait, landscape, txtActiveField;
+
 bool didAnimate = NO;
 
 -(IBAction)signup
@@ -51,11 +52,11 @@ bool didAnimate = NO;
 }
 
 -(IBAction)login {
-    //NSLog(@"Username: %@", username.text);
+    NSLog(@"Username: %@", username.text);
     //NSLog(@"Password: %@", password.text);
     
     NSString *passHash = [password.text MD5];
-    //NSLog(@"%@", passHash);
+    NSLog(@"%@", passHash);
     
     NSString *auth = [NSString stringWithFormat:@"%s%@%s%@","http://webservices.socialraptor.com/auth/?uID=",username.text,"&auth=",passHash];
     
@@ -75,17 +76,25 @@ bool didAnimate = NO;
     }
     else
     {
-        NSString *url = [NSString stringWithFormat:@"%s%@%s%@%s","http://webservices.socialraptor.com/activity/?uID=",username.text,"&auth=",passHash,"&maxID=10&offset=0&quantity=10&service=all"];
+        //NSString *url = [NSString stringWithFormat:@"%s%@%s%@%s","https://webservices.socialraptor.com/activity/?uID=",username.text,"&auth=",passHash,"&maxID=100&offset=0&quantity=100&service=all"];
         
-        jsonData = [NSData dataWithContentsOfURL:[NSURL URLWithString:url]];
+        //jsonData = [NSData dataWithContentsOfURL:[NSURL URLWithString:url]];
+        
+        NSString *filePath = [[NSBundle mainBundle] pathForResource:@"DATA" ofType:@"json"];
+        NSError *error = nil;
+        jsonData = [NSData dataWithContentsOfFile:filePath options:NSDataReadingMappedIfSafe error:&error];
         
         jsonObjects = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:nil];
         
         //NSLog(@"%@",[jsonObjects objectAtIndex: 0]);
         
-        NSString *contactUrl = [NSString stringWithFormat:@"%s%@%s%@%s","http://webservices.socialraptor.com/contacts/?uID=",username.text,"&auth=",passHash,"&service=all"];
+//        NSString *contactUrl = [NSString stringWithFormat:@"%s%@%s%@%s","https://webservices.socialraptor.com/contacts/?uID=",username.text,"&auth=",passHash,"&service=all"];
+//        
+//        jsonContacts = [NSData dataWithContentsOfURL:[NSURL URLWithString:contactUrl]];
         
-        jsonContacts = [NSData dataWithContentsOfURL:[NSURL URLWithString:contactUrl]];
+        NSString *contactFilePath = [[NSBundle mainBundle] pathForResource:@"CONTACTS" ofType:@"json"];
+
+        jsonContacts = [NSData dataWithContentsOfFile:contactFilePath options:NSDataReadingMappedIfSafe error:&error];
         
         jsonContactObjects = [NSJSONSerialization JSONObjectWithData:jsonContacts options:NSJSONReadingMutableContainers error:nil];
         
@@ -120,17 +129,17 @@ bool didAnimate = NO;
 //scroll the view up when the keyboard appears
 - (void)textFieldDidBeginEditing:(UITextField *)textField
 {
-    if (didAnimate == NO) {
+    if(didAnimate == NO)
+    {
         [UIView beginAnimations:nil context:NULL];
-        [UIView setAnimationDuration:0.35f];
+        [UIView setAnimationDuration:0.25f];
         CGRect frame = self.view.frame;
-        frame.origin.y = -160;
+        frame.origin.y = -170;
         [self.view setFrame:frame];
         [UIView commitAnimations];
         didAnimate = YES;
     }
-    
-    
+        
     //check which text field was selected
     if (username.isFirstResponder) {
         txtActiveField = username;
@@ -160,11 +169,12 @@ bool didAnimate = NO;
 //scroll the view down when the keyboard disappears
 - (void)textFieldDidEndEditing:(UITextField *)textField
 {
-    if (didAnimate) {
+    if(didAnimate)
         return;
-    } else {
+    else
+    {
         [UIView beginAnimations:nil context:NULL];
-        [UIView setAnimationDuration:0.35f];
+        [UIView setAnimationDuration:0.25f];
         CGRect frame = self.view.frame;
         frame.origin.y = 20;
         [self.view setFrame:frame];

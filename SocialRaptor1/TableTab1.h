@@ -12,7 +12,6 @@
 
 //- (void) fetchTweets;
 - (NSIndexPath *)indexPathForSelectedRow;
-
 -(void) requestActivity;
 
 @property (strong, nonatomic) UITableView *tableView;
