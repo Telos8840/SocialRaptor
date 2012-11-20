@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C7B71105165B4CF600F646D6 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7B71104165B4CF600F646D6 /* CoreData.framework */; };
+		C7B71108165B4D8700F646D6 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7B71107165B4D8700F646D6 /* Security.framework */; };
+		C7B7110A165B50EC00F646D6 /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C7B71109165B50EC00F646D6 /* MobileCoreServices.framework */; };
+		C7B7110E165B5EF600F646D6 /* green-button.png in Resources */ = {isa = PBXBuildFile; fileRef = C7B7110D165B5EF600F646D6 /* green-button.png */; };
 		CD016CBC1651E80B009CAC8D /* DATA.json in Resources */ = {isa = PBXBuildFile; fileRef = CD016CBB1651E80B009CAC8D /* DATA.json */; };
 		CD089739164B7BD100FD72C2 /* text_field_yellow.png in Resources */ = {isa = PBXBuildFile; fileRef = CD089738164B7BD100FD72C2 /* text_field_yellow.png */; };
 		CD08973D164B7C8400FD72C2 /* CustomTextField.m in Sources */ = {isa = PBXBuildFile; fileRef = CD08973C164B7C8400FD72C2 /* CustomTextField.m */; };
@@ -48,6 +52,10 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		C7B71104165B4CF600F646D6 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
+		C7B71107165B4D8700F646D6 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		C7B71109165B50EC00F646D6 /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
+		C7B7110D165B5EF600F646D6 /* green-button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "green-button.png"; sourceTree = "<group>"; };
 		CD016CBB1651E80B009CAC8D /* DATA.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = DATA.json; sourceTree = "<group>"; };
 		CD089738164B7BD100FD72C2 /* text_field_yellow.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = text_field_yellow.png; sourceTree = "<group>"; };
 		CD08973B164B7C8400FD72C2 /* CustomTextField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomTextField.h; sourceTree = "<group>"; };
@@ -108,6 +116,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				C7B7110A165B50EC00F646D6 /* MobileCoreServices.framework in Frameworks */,
+				C7B71108165B4D8700F646D6 /* Security.framework in Frameworks */,
+				C7B71105165B4CF600F646D6 /* CoreData.framework in Frameworks */,
 				CD7A27F8162A55D30055C539 /* UIKit.framework in Frameworks */,
 				CD7A27FA162A55D30055C539 /* Foundation.framework in Frameworks */,
 				CD7A27FC162A55D30055C539 /* CoreGraphics.framework in Frameworks */,
@@ -137,6 +148,9 @@
 		CD7A27F6162A55D30055C539 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				C7B71109165B50EC00F646D6 /* MobileCoreServices.framework */,
+				C7B71107165B4D8700F646D6 /* Security.framework */,
+				C7B71104165B4CF600F646D6 /* CoreData.framework */,
 				CD7A27F7162A55D30055C539 /* UIKit.framework */,
 				CD7A27F9162A55D30055C539 /* Foundation.framework */,
 				CD7A27FB162A55D30055C539 /* CoreGraphics.framework */,
@@ -180,6 +194,7 @@
 		CD7A27FE162A55D30055C539 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
+				C7B7110D165B5EF600F646D6 /* green-button.png */,
 				CD089738164B7BD100FD72C2 /* text_field_yellow.png */,
 				CDE9DC30165216F200282789 /* Default-568h@2x.png */,
 				CDDD895C1644F33E00334FDF /* Plain_green_background.jpg */,
@@ -282,6 +297,7 @@
 				CDE9DC2D1652141B00282789 /* tab_bg.png in Resources */,
 				CDE9DC2F165215C800282789 /* button_back_textured_30.png in Resources */,
 				CDE9DC31165216F200282789 /* Default-568h@2x.png in Resources */,
+				C7B7110E165B5EF600F646D6 /* green-button.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

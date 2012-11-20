@@ -383,6 +383,7 @@
                                         <items>
                                             <navigationItem id="gKP-28-Wi1">
                                                 <barButtonItem key="leftBarButtonItem" title="Cancel" id="3y2-vw-leW">
+                                                    <color key="tintColor" red="0.1195258115" green="0.63888417119999996" blue="0.12397771859999999" alpha="1" colorSpace="calibratedRGB"/>
                                                     <connections>
                                                         <action selector="cancel" destination="qrL-6l-NM7" id="aFz-H6-qZ2"/>
                                                     </connections>
@@ -406,26 +407,34 @@
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                     </textView>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Xn1-Sd-Rxl">
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="50" id="0n9-cR-sqI"/>
+                                            <constraint firstAttribute="width" constant="50" id="Jm6-pM-G1m"/>
+                                        </constraints>
+                                    </imageView>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstItem="SJ7-TH-Qjr" firstAttribute="leading" secondItem="svA-om-ThB" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="0y5-Iz-5dM"/>
                                     <constraint firstItem="AHf-j4-qIm" firstAttribute="leading" secondItem="svA-om-ThB" secondAttribute="leading" type="default" id="5Uc-o5-gfY"/>
                                     <constraint firstItem="R9J-IV-ya6" firstAttribute="leading" secondItem="svA-om-ThB" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="6Gz-da-85m"/>
+                                    <constraint firstItem="Xn1-Sd-Rxl" firstAttribute="leading" secondItem="svA-om-ThB" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="6cH-Kv-BqU"/>
                                     <constraint firstAttribute="trailing" secondItem="R9J-IV-ya6" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="7db-88-YcH"/>
+                                    <constraint firstAttribute="bottom" secondItem="Xn1-Sd-Rxl" secondAttribute="bottom" constant="43" id="7e7-RN-hKE"/>
                                     <constraint firstItem="AHf-j4-qIm" firstAttribute="trailing" secondItem="svA-om-ThB" secondAttribute="trailing" type="default" id="90r-jr-bzo"/>
-                                    <constraint firstItem="SJ7-TH-Qjr" firstAttribute="top" secondItem="svA-om-ThB" secondAttribute="top" constant="182" scoringType="5" id="BQI-kA-WGW"/>
-                                    <constraint firstItem="AHf-j4-qIm" firstAttribute="top" secondItem="svA-om-ThB" secondAttribute="top" constant="202" id="Ilx-SC-M3w"/>
                                     <constraint firstItem="LFJ-ql-OS6" firstAttribute="leading" secondItem="svA-om-ThB" secondAttribute="leading" type="default" id="JgH-b2-6tj"/>
+                                    <constraint firstItem="Xn1-Sd-Rxl" firstAttribute="top" secondItem="svA-om-ThB" secondAttribute="top" constant="152" scoringType="5" id="a78-U7-LhB"/>
                                     <constraint firstAttribute="bottom" secondItem="SJ7-TH-Qjr" secondAttribute="bottom" constant="42" id="d8T-uF-MFR"/>
                                     <constraint firstAttribute="trailing" secondItem="SJ7-TH-Qjr" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="e8Q-T9-ULv"/>
                                     <constraint firstItem="LFJ-ql-OS6" firstAttribute="trailing" secondItem="svA-om-ThB" secondAttribute="trailing" type="default" id="gN2-Tn-hdd"/>
                                     <constraint firstItem="R9J-IV-ya6" firstAttribute="top" secondItem="svA-om-ThB" secondAttribute="top" constant="49" id="gqB-Av-Jqf"/>
                                     <constraint firstItem="LFJ-ql-OS6" firstAttribute="top" secondItem="svA-om-ThB" secondAttribute="top" type="default" id="m33-jI-Jpz"/>
+                                    <constraint firstItem="Xn1-Sd-Rxl" firstAttribute="bottom" secondItem="AHf-j4-qIm" secondAttribute="top" type="default" id="oNn-2y-sVx"/>
                                 </constraints>
                             </view>
                         </subviews>
-                        <color key="backgroundColor" cocoaTouchSystemColor="scrollViewTexturedBackgroundColor"/>
+                        <color key="backgroundColor" cocoaTouchSystemColor="viewFlipsideBackgroundColor"/>
                         <constraints>
                             <constraint firstAttribute="trailing" secondItem="svA-om-ThB" secondAttribute="trailing" constant="20" symbolic="YES" type="default" id="21B-Oc-761"/>
                             <constraint firstItem="svA-om-ThB" firstAttribute="leading" secondItem="3uK-AF-mcT" secondAttribute="leading" constant="20" symbolic="YES" type="default" id="Qhi-wO-b95"/>
@@ -436,6 +445,7 @@
                     <connections>
                         <outlet property="camera" destination="Whn-Md-gGT" id="jru-VE-qId"/>
                         <outlet property="container" destination="svA-om-ThB" id="dnD-ZU-MSA"/>
+                        <outlet property="imageView" destination="Xn1-Sd-Rxl" id="nid-BK-sV4"/>
                         <outlet property="navbar" destination="gKP-28-Wi1" id="4RL-UG-Mzh"/>
                         <outlet property="toolbar" destination="AHf-j4-qIm" id="5Wb-iM-1Vw"/>
                         <outlet property="update" destination="dUx-JM-FMR" id="ll4-IL-D9x"/>
@@ -659,11 +669,11 @@
             <source key="sourceIdentifier" type="project" relativePath="./Classes/updateViewController.h"/>
             <relationships>
                 <relationship kind="action" name="cancel"/>
-                <relationship kind="action" name="dismissKeyboard:"/>
                 <relationship kind="action" name="getPictures:"/>
                 <relationship kind="action" name="postUpdate:"/>
                 <relationship kind="outlet" name="camera" candidateClass="UIBarButtonItem"/>
                 <relationship kind="outlet" name="container" candidateClass="UIView"/>
+                <relationship kind="outlet" name="imageView" candidateClass="UIImageView"/>
                 <relationship kind="outlet" name="navbar" candidateClass="UINavigationItem"/>
                 <relationship kind="outlet" name="toolbar" candidateClass="UIToolbar"/>
                 <relationship kind="outlet" name="update" candidateClass="UIBarButtonItem"/>

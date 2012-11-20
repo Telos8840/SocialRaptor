@@ -14,7 +14,7 @@
 @end
 
 @implementation updateViewController
-@synthesize container, updateTextView, toolbar, navbar, camera, update, updateLabel;
+@synthesize container, updateTextView, toolbar, navbar, camera, update, updateLabel, imageView;
 NSUInteger charCount;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -33,6 +33,8 @@ NSUInteger charCount;
     [[UINavigationBar appearance] setBackgroundImage:navBarBG forBarMetrics:UIBarMetricsDefault];
     
     [toolbar setBackgroundImage:[UIImage imageNamed:@"toolbarBG-rounded.png"] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
+    
+    //UIImage *button = [[UIImage imageNamed:@"green-button.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 12, 0, 5)];
     
     updateTextView.delegate = self;
     //container.bounds = CGRectMake(0, 0, 0, 0);
@@ -59,8 +61,12 @@ NSUInteger charCount;
     container.layer.shadowRadius = 5;
     container.layer.shadowOpacity = 0.5;
     
-    update.enabled = NO;
-    updateLabel.text = @"";
+    if ([updateLabel.text length] > 0) {
+        update.enabled = YES;
+    } else {
+        update.enabled = NO;
+        updateLabel.text = @"";
+    }
 }
 
 - (void)textViewDidChange:(UITextView *)textView {
@@ -90,25 +96,76 @@ NSUInteger charCount;
 }
 
 - (IBAction)getPictures:(id)sender {
+    if ([UIImagePickerController isSourceTypeAvailable:UIImagePickerControllerSourceTypeSavedPhotosAlbum])
+    {
+        UIImagePickerController *imagePicker = [[UIImagePickerController alloc] init];
+        imagePicker.delegate = self;
+        imagePicker.sourceType = UIImagePickerControllerSourceTypePhotoLibrary;
+        imagePicker.mediaTypes = [NSArray arrayWithObjects:(NSString *) kUTTypeImage, nil];
+        imagePicker.allowsEditing = NO;
+        //UIImage *btn = [[UIImage imageNamed:@"green-button.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 13, 0, 5)];
+        //[[UIBarButtonItem appearance] setBackgroundImage:btn forBarMetrics:UIBarMetricsDefault];
+        [self presentModalViewController:imagePicker animated:YES];
+        newMedia = NO;
+    }
+}
+
+-(void)imagePickerController:(UIImagePickerController *)picker
+didFinishPickingMediaWithInfo:(NSDictionary *)info
+{
+    NSString *mediaType = [info objectForKey:UIImagePickerControllerMediaType];
+    [self dismissModalViewControllerAnimated:YES];
+    
+    if ([mediaType isEqualToString:(NSString *)kUTTypeImage])
+    {
+        UIImage *image = [info objectForKey:UIImagePickerControllerOriginalImage];
+        
+        imageView.image = image;
+        
+        if (newMedia)
+        {
+            UIImageWriteToSavedPhotosAlbum(image, self, @selector(image:finishedSavingWithError:contextInfo:), nil);
+        }
+    }
+    else if ([mediaType isEqualToString:(NSString *)kUTTypeMovie])
+    {
+		// If we wanted to add video also
+	}
+}
+
+-(void)image:(UIImage *)imagefinishedSavingWithError:(NSError *)error
+ contextInfo:(void *)contextInfo
+{
+    if (error) {
+        UIAlertView *alert = [[UIAlertView alloc]
+                              initWithTitle: @"Save failed"
+                              message: @"Failed to save image"\
+                              delegate: nil
+                              cancelButtonTitle:@"OK"
+                              otherButtonTitles:nil];
+        [alert show];
+    }
+}
+
+-(void)imagePickerControllerDidCancel:(UIImagePickerController *)picker
+{
+    [self dismissModalViewControllerAnimated:YES];
 }
 
 - (IBAction)postUpdate:(id)sender {
     NSString *message = [[NSString alloc] initWithFormat:@"Status posted!"];
+    imageView.image = nil;
     updateTextView.text = @"";
     [updateLabel setText:message];
     //NSLog(@"Update: %@", [updateTextField text]);
     [updateTextView resignFirstResponder];
 }
 
-- (IBAction)dismissKeyboard:(id)sender {
-    [updateTextView resignFirstResponder];
-}
-
 - (IBAction)cancel {
     [updateTextView resignFirstResponder];
+    imageView.image = nil;
     updateTextView.text = @"";
     updateLabel.text = @"";
     charCount = 0;
 }
-
 @end
