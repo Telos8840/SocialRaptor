@@ -13,4 +13,7 @@
     NSArray *images, *labelName;
 }
 
+@property (nonatomic, copy) NSArray *images;
+@property (nonatomic, copy) NSArray *labelName;
+
 @end

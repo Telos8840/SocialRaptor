@@ -7,12 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "PullToRefreshTableViewController.h"
+#import "DetailViewController.h"
 
-@interface TableTab1 : UITableViewController <UITableViewDataSource, UITableViewDelegate>
+@interface TableTab1 : PullToRefreshTableViewController<DetailViewControllerDelegate>
 
-//- (void) fetchTweets;
-- (NSIndexPath *)indexPathForSelectedRow;
+//UITableViewController <UITableViewDataSource, UITableViewDelegate>
+
 -(void) requestActivity;
+-(void) getServices;
 
 @property (strong, nonatomic) UITableView *tableView;
 

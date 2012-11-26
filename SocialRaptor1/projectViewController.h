@@ -14,21 +14,20 @@
     IBOutlet UITextField *username;
     IBOutlet UITextField *password;
     IBOutlet UISwitch *keeplogin;
-    IBOutlet UIView *portrait;
-    IBOutlet UIView *landscape;
     UITextField *txtActiveField;
+    
 }
 
 @property (nonatomic, retain) IBOutlet UITextField *username;
 @property (nonatomic, retain) IBOutlet UITextField *password;
-@property (nonatomic, retain) IBOutlet UIView *portrait;
-@property (nonatomic, retain) IBOutlet UIView *landscape;
 @property (nonatomic, retain) UITextField *txtActiveField;
 
 
 -(IBAction)login;
 -(IBAction)dismissKeyboard: (id) sender;
 -(IBAction)signup;
+-(IBAction)savedata:(id)sender;
+
 
 @end
 
@@ -38,3 +37,8 @@ NSDictionary *jsonAuthentication;
 NSData *jsonData;
 NSData *jsonContacts;
 NSData *jsonAuth;
+NSString *url;
+NSString *service;
+NSString *user;
+NSString *pwd;
+NSString *passHash;

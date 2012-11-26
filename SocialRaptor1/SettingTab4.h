@@ -10,11 +10,10 @@
 
 @interface SettingTab4 : UITableViewController <UITableViewDataSource, UITableViewDelegate>
 {
-   
 }
 
 - (IBAction)logout;
 
 @end
 
-NSMutableArray *selectedIndices;
+BOOL changes;

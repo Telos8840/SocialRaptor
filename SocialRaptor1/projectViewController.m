@@ -8,12 +8,16 @@
 
 #import "projectViewController.h"
 #import "TabBarViewController.h"
+#import "SettingTab4.h"
+#import "LaunchPage.h"
 #import <CommonCrypto/CommonDigest.h>
 
 @interface projectViewController ()
 
 @end
 
+
+////////////////////////////////////////////////////////////////////////////////////////////////
 @interface NSString (MD5)
 -(NSString *)MD5;
 @end;
@@ -39,10 +43,11 @@
     return output;
 }
 @end
+///////////////////////////////////////////////////////////////////////////////////////////////
 
 @implementation projectViewController
 
-@synthesize username, password, portrait, landscape, txtActiveField;
+@synthesize username, password, txtActiveField;
 
 bool didAnimate = NO;
 
@@ -52,59 +57,44 @@ bool didAnimate = NO;
 }
 
 -(IBAction)login {
-    NSLog(@"Username: %@", username.text);
-    //NSLog(@"Password: %@", password.text);
     
-    NSString *passHash = [password.text MD5];
-    NSLog(@"%@", passHash);
+    //save username and password
+    [self savedata:self];
     
+    user = username.text;
+    
+    //encrypt password with MD5 encryption
+    passHash = [password.text MD5];
+    
+    //authenticate user
     NSString *auth = [NSString stringWithFormat:@"%s%@%s%@","http://webservices.socialraptor.com/auth/?uID=",username.text,"&auth=",passHash];
-    
-    //NSData *jsonData = [NSData dataWithContentsOfURL:[NSURL URLWithString:@"https://api.twitter.com/1/statuses/user_timeline.json?include_entities=true&include_rts=true&screen_name=barackobama&count=200"]];
-    
     jsonAuth = [NSData dataWithContentsOfURL:[NSURL URLWithString:auth]];
-    
     jsonAuthentication = [NSJSONSerialization JSONObjectWithData:jsonAuth options:NSJSONReadingMutableContainers error:nil];
-    
     
     if([[jsonAuthentication objectForKey:@"message"] isEqualToString:@"Invalid user ID or authentication."])
     {
-        //NSLog(@"wrong username or password");
         UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Alert" message:@"Wrong username or password!" delegate:nil cancelButtonTitle:@"Try Again" otherButtonTitles:nil, nil];
         [message show];
-        
     }
-    else
+    else //valid ID and password
     {
-        //NSString *url = [NSString stringWithFormat:@"%s%@%s%@%s","https://webservices.socialraptor.com/activity/?uID=",username.text,"&auth=",passHash,"&maxID=100&offset=0&quantity=100&service=all"];
-        
-        //jsonData = [NSData dataWithContentsOfURL:[NSURL URLWithString:url]];
-        
-        NSString *filePath = [[NSBundle mainBundle] pathForResource:@"DATA" ofType:@"json"];
-        NSError *error = nil;
-        jsonData = [NSData dataWithContentsOfFile:filePath options:NSDataReadingMappedIfSafe error:&error];
-        
-        jsonObjects = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:nil];
-        
-        //NSLog(@"%@",[jsonObjects objectAtIndex: 0]);
-        
-//        NSString *contactUrl = [NSString stringWithFormat:@"%s%@%s%@%s","https://webservices.socialraptor.com/contacts/?uID=",username.text,"&auth=",passHash,"&service=all"];
-//        
-//        jsonContacts = [NSData dataWithContentsOfURL:[NSURL URLWithString:contactUrl]];
-        
-        NSString *contactFilePath = [[NSBundle mainBundle] pathForResource:@"CONTACTS" ofType:@"json"];
-
-        jsonContacts = [NSData dataWithContentsOfFile:contactFilePath options:NSDataReadingMappedIfSafe error:&error];
-        
-        jsonContactObjects = [NSJSONSerialization JSONObjectWithData:jsonContacts options:NSJSONReadingMutableContainers error:nil];
-        
-        //NSLog(@"%@",[jsonContactObjects objectAtIndex: 0]);
-        //NSLog(@"%@",[jsonContactObjects objectAtIndex: 1]);
-        
+        //go to activities page
         [self performSegueWithIdentifier:@"Login" sender:self];
     }
 }
 
+
+-(IBAction)savedata:(id)sender
+{
+    NSString *saveUser = username.text;
+    NSString *savePass = password.text;
+
+    defaults = [NSUserDefaults standardUserDefaults];
+    [defaults setObject:saveUser forKey:@"savedUser"];
+    [defaults setObject:savePass forKey:@"savedPass"];
+
+    [defaults synchronize];
+}
 
 //dismiss the keyboard when "return" or "done" is pressed
 -(IBAction)dismissKeyboard:(id)sender {
@@ -115,10 +105,19 @@ bool didAnimate = NO;
 
 - (void)viewDidLoad
 {
+	// load saved configurations
+    defaults = [NSUserDefaults standardUserDefaults];
+    NSString *loadUser = [defaults objectForKey:@"savedUser"];
+    NSString *loadPass = [defaults objectForKey:@"savedPass"];
+    
+    if(loadUser && loadPass)
+    {
+        [username setText:loadUser];
+        [password setText:loadPass];
+    }
+
     [super viewDidLoad];
-	// Do any additional setup after loading the view, typically from a nib.
-    [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged:) name:@"UIDeviceOrientationDidChangeNotification" object:nil];}
+}
 
 - (void)didReceiveMemoryWarning
 {
@@ -132,9 +131,9 @@ bool didAnimate = NO;
     if(didAnimate == NO)
     {
         [UIView beginAnimations:nil context:NULL];
-        [UIView setAnimationDuration:0.25f];
+        [UIView setAnimationDuration:0.35f];
         CGRect frame = self.view.frame;
-        frame.origin.y = -170;
+        frame.origin.y = -160;
         [self.view setFrame:frame];
         [UIView commitAnimations];
         didAnimate = YES;
@@ -174,7 +173,7 @@ bool didAnimate = NO;
     else
     {
         [UIView beginAnimations:nil context:NULL];
-        [UIView setAnimationDuration:0.25f];
+        [UIView setAnimationDuration:0.35f];
         CGRect frame = self.view.frame;
         frame.origin.y = 20;
         [self.view setFrame:frame];
@@ -204,20 +203,6 @@ bool didAnimate = NO;
     [password resignFirstResponder];
     didAnimate = NO;
     [self textFieldDidEndEditing:txtActiveField];
-}
-
-- (void) orientationChanged: (NSNotification *) object
-{
-    UIDeviceOrientation deviceOrientation = [[object object] orientation];
-    
-    if (deviceOrientation == UIDeviceOrientationLandscapeLeft || deviceOrientation == UIDeviceOrientationLandscapeRight)
-    {
-        //[self performSegueWithIdentifier:@"Landscape" sender:self];
-    }
-    else
-    {
-        //[self performSegueWithIdentifier:@"Portrait" sender:self];
-    }
 }
 
 - (BOOL) shouldAutorotate

@@ -10,6 +10,7 @@
 
 @interface ContactCell : UICollectionViewCell
 @property (strong, nonatomic) IBOutlet UIImageView *profpic;
+@property (strong, nonatomic) IBOutlet UIImageView *servicepic;
 @property (strong, nonatomic) IBOutlet UILabel *name;
 
 @end

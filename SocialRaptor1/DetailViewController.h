@@ -7,18 +7,23 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "DetailView.h"
 
-@interface DetailViewController : UIViewController <UIGestureRecognizerDelegate>{
-    IBOutlet UILabel *via;
-    IBOutlet UIImageView *profileImage;
-    IBOutlet UILabel *nameLabel;
-    IBOutlet UITextView *tweetLabel;
-    IBOutlet UILabel *tweetDate;
-}
+@class DetailViewController;
+
+@protocol DetailViewControllerDelegate <NSObject>
+-(void)detailviewControllerBack:(DetailViewController *)controller;
+
+@end
+
+@interface DetailViewController : UIViewController <UIGestureRecognizerDelegate>
 
 - (void)swipedLeft:(DetailViewController *)sender;
 - (void)swipedRight:(DetailViewController *)sender;
 
-@property (weak, nonatomic) id detailItem;
+@property (strong, nonatomic) NSArray *activities;
+@property (assign, nonatomic) NSInteger row;
+
+@property (weak, nonatomic) id<DetailViewControllerDelegate> delegate;
 
 @end

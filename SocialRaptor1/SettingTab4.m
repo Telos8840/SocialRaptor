@@ -7,6 +7,8 @@
 //
 
 #import "SettingTab4.h"
+#import "projectViewController.h"
+#import "LaunchPage.h"
 
 @interface SettingTab4 ()
 {
@@ -35,6 +37,7 @@
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    
     servicesArray = [[NSArray alloc] init];
     miscArray = [[NSArray alloc] init];
     
@@ -48,23 +51,39 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - LogOut
+
 - (IBAction)logout
 {
-    
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Alert!" message:@"Log out of Social Raptor?\nAll settings will be cleared."  delegate:self cancelButtonTitle:@"OK" otherButtonTitles: @"Cancel", nil];
+    [alert show];
+}
+
+- (void)alertView:(UIAlertView *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex {
+    // the user clicked one of the OK/Cancel buttons
+    if (buttonIndex == 0)
+    {
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"savedUser"];
+        [[NSUserDefaults standardUserDefaults] removeObjectForKey:@"savedPass"];
+        [[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithBool:YES] forKey:@"KEY0"];
+        [[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithBool:YES] forKey:@"KEY1"];
+        [[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithBool:YES] forKey:@"KEY2"];
+        [[NSUserDefaults standardUserDefaults] setValue:[NSNumber numberWithBool:YES] forKey:@"KEY3"];
+        [[NSUserDefaults standardUserDefaults] synchronize];
+        [self performSegueWithIdentifier:@"Logout" sender:self];
+    }
 }
 
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-//#warning Potentially incomplete method implementation.
     // Return the number of sections.
     return 3;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-//#warning Incomplete method implementation.
     // Return the number of rows in the section.
     if(section == 0)
     {
@@ -73,13 +92,13 @@
     }
     else if(section == 1)
     {
-        miscArray = [NSArray arrayWithObjects: @"About", @"Frequently Asked Questions", @"Terms of Use", nil];
+        return 1;
+    }
+    else if(section == 2)
+    {
+        miscArray = [NSArray arrayWithObjects: @"About", @"Terms of Use", nil];
         return [miscArray count];
     }
-//    else if(section == 2)
-//    {
-//        return 1;
-//    }
     return 0;
 }
 
@@ -96,11 +115,33 @@
         cell.textLabel.text = [servicesArray objectAtIndex:indexPath.row];
         //NSLog(@"%d", indexPath.row);
         
+        if([self getCheckedForIndex:indexPath.row]==YES)
+        {
+            cell.accessoryType = UITableViewCellAccessoryCheckmark;
+        }
+        else
+        {
+            cell.accessoryType = UITableViewCellAccessoryNone;
+        }
         
-        [cell setAccessoryType:UITableViewCellAccessoryCheckmark];
-        [selectedIndices addObject:[NSNumber numberWithInt:indexPath.row]];
+       // NSLog(@"%@",[[selectedIndices objectAtIndex:indexPath.row] description]);
     }
-    else if(indexPath.section ==1)
+    else if(indexPath.section == 1)
+    {
+        CellIdentifier = @"Pref";
+        cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+        cell.textLabel.text = @"Number of Feeds";
+        UITextField *textField = [[UITextField alloc] init];
+        // Add general UITextAttributes if necessary
+        textField.placeholder = @"@JohnAppleseed";
+        textField.keyboardType = UIKeyboardTypeNumberPad;
+        textField.returnKeyType = UIReturnKeyDone;
+        textField.enablesReturnKeyAutomatically = YES;
+        [textField setEnabled:YES];
+        [cell addSubview:textField];
+        [textField setText:@"600"];
+    }
+    else if(indexPath.section == 2)
     {
         CellIdentifier = @"miscCell";
         cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
@@ -113,6 +154,32 @@
     return cell;
 }
 
+- (NSString *)getKeyForIndex:(int)index
+{
+    return [NSString stringWithFormat:@"KEY%d",index];
+}
+
+- (BOOL) getCheckedForIndex:(int)index
+{
+    if([[defaults valueForKey:[self getKeyForIndex:index]] boolValue]==YES)
+    {
+        return YES;
+    }
+    else
+    {
+        return NO;
+    }
+}
+
+- (void) checkedCellAtIndex:(int)index
+{
+    BOOL boolChecked = [self getCheckedForIndex:index];
+    
+    [defaults setValue:[NSNumber numberWithBool:!boolChecked] forKey:[self getKeyForIndex:index]];
+    [defaults synchronize];
+}
+
+
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
 	
 	NSString *sectionHeader = nil;
@@ -121,8 +188,11 @@
 		sectionHeader = @"Services";
 	}
 	if(section == 1) {
-		sectionHeader = @"Miscellaneous";
+		sectionHeader = @"Preferences";
 	}
+    if(section == 2) {
+        sectionHeader = @"Miscellaneous";
+    }
 	return sectionHeader;
 }
 
@@ -166,24 +236,35 @@
 }
 */
 
+
 #pragma mark - Table view delegate
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    
     switch(indexPath.section)
     {
         case 0:
         {
+            changes = YES;
+            
             UITableViewCell *selectedCell = [tableView cellForRowAtIndexPath:indexPath];
             
-            if ([selectedCell accessoryType] == UITableViewCellAccessoryNone) {
-                [selectedCell setAccessoryType:UITableViewCellAccessoryCheckmark];
-                [selectedIndices addObject:[NSNumber numberWithInt:indexPath.row]];
-            } else {
-                [selectedCell setAccessoryType:UITableViewCellAccessoryNone];
-                [selectedIndices removeObject:[NSNumber numberWithInt:indexPath.row]];
+            if([self getCheckedForIndex:indexPath.row]==YES)
+            {
+                selectedCell.accessoryType = UITableViewCellAccessoryNone;
             }
-            
+            else
+            {
+                selectedCell.accessoryType = UITableViewCellAccessoryCheckmark;
+            }
+            [self checkedCellAtIndex:indexPath.row];
+            if([[defaults valueForKey:@"KEY0"] isEqualToNumber:[NSNumber numberWithInt:0]]&&[[defaults valueForKey:@"KEY1"] isEqualToNumber:[NSNumber numberWithInt:0]]&&[[defaults valueForKey:@"KEY2"] isEqualToNumber:[NSNumber numberWithInt:0]]&&[[defaults valueForKey:@"KEY3"] isEqualToNumber:[NSNumber numberWithInt:0]]){
+                UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Alert" message:@"Select at least one service" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil, nil];
+                [message show];
+                selectedCell.accessoryType = UITableViewCellAccessoryCheckmark;
+                [self checkedCellAtIndex:indexPath.row];
+            }
             [tableView deselectRowAtIndexPath:indexPath animated:NO];
             break;
         }

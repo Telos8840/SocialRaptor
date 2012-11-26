@@ -10,54 +10,81 @@
 #import "DetailViewController.h"
 #import "projectViewController.h"
 #import "CustomNavController.h"
+#import "SettingTab4.h"
+#import "DetailView.h"
+#import "LaunchPage.h"
+#import <QuartzCore/QuartzCore.h>
 
-@interface TableTab1 () {
-    NSMutableArray *_objects;
-}
+@interface TableTab1 ()
 -(UIImage *)selectedBackgroundImageForRowAtIndexPath:(NSIndexPath *)indexPath;
 @end
 
 
 @implementation TableTab1
 
+-(void) getServices
+{
+    NSMutableArray *serv = [[NSMutableArray alloc]init];
+    if([[defaults valueForKey:@"KEY0"] isEqualToNumber:[NSNumber numberWithInt:1]])
+        [serv addObject:@"Facebook"];
+    if([[defaults valueForKey:@"KEY1"] isEqualToNumber:[NSNumber numberWithInt:1]])
+        [serv addObject:@"Twitter"];
+    if([[defaults valueForKey:@"KEY2"] isEqualToNumber:[NSNumber numberWithInt:1]])
+        [serv addObject:@"LinkedIn"];
+    if([[defaults valueForKey:@"KEY3"] isEqualToNumber:[NSNumber numberWithInt:1]])
+        [serv addObject:@"GooglePlus"];
+        
+    service = [serv componentsJoinedByString:@","];
+}
 
-//- (void) fetchTweets
-//{
-//    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-//        NSData* data = [NSData dataWithContentsOfURL:
-//                        [NSURL URLWithString: @"https://api.twitter.com/1/statuses/user_timeline.json?include_entities=true&include_rts=true&screen_name=barackobama&count=200"]];
-//        
-//        NSError* error;
-//        tweets = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//            [self.tableView reloadData];}); });
-//}
+-(void) getActivities
+{
+    bool web = true; //when server can't be accessed, set this to false
+    
+    if(web)
+    {
+        NSError *error;
+        
+        [self getServices];
+        
+        url = [NSString stringWithFormat:@"%s%@%s%@%s","http://webservices.socialraptor.com/activity/?uID=",user,"&auth=",passHash,"&maxID=10000&offset=0&quantity=600&service="];
+        
+        NSURL *URL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", url, service]];
+        
+        jsonData = [NSData dataWithContentsOfURL:URL options:NSDataReadingUncached error:&error];
+        
+        jsonObjects = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:&error];
+        
+        //NSLog(@"%@",[jsonObjects objectAtIndex: 0]);
+    }
+    else
+    {
+        //using json file
+        NSString *filePath = [[NSBundle mainBundle] pathForResource:@"DATA" ofType:@"json"];
+        NSError *error = nil;
+        jsonData = [NSData dataWithContentsOfFile:filePath options:NSDataReadingMappedIfSafe error:&error];
+        
+        jsonObjects = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:nil];
+    }
+    
+}
 
 - (void) requestActivity
 {
+    [self getActivities];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        
-//        NSData *jsonData = [NSData dataWithContentsOfURL:[NSURL URLWithString:@"http://webservices.socialraptor.com/activity/?uID=fred1234&auth=64575c3f7b916fa029f0d3bb13f3c9b6&maxID=3&offset=0&quantity=10&service=all"]];
-//        
-//        jsonObjects = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:nil];
-        
-        activities = [jsonObjects objectAtIndex: 1];
-        
-        //NSLog(@"%@",[jsonObjects objectAtIndex: 1]);
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView reloadData];}); });
+       activities = [jsonObjects objectAtIndex: 1];
+       //NSLog(@"%@",[jsonObjects objectAtIndex: 1]);
+       dispatch_async(dispatch_get_main_queue(), ^{
+           [self.tableView reloadData];
+       });
+    });
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
     return activities.count;
 }
-
-
-//- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-//{
-//    return tweets.count;
-//}
 
 - (NSIndexPath *)indexPathForSelectedRow
 {
@@ -85,32 +112,14 @@
     
     NSString *imageUrl = [activity objectForKey: @"imageURL"];
     NSData *data = [NSData dataWithContentsOfURL: [NSURL URLWithString: imageUrl]];
+    [cell.imageView.layer setMasksToBounds:YES];
+    cell.imageView.layer.cornerRadius = 8;
     cell.imageView.image = [UIImage imageWithData: data];
     return cell;
 }
 
-//- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
-//{
-//    static NSString *CellIdentifier = @"Cell";
-//    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
-//    if(cell == nil) {
-//        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
-//    }
-//    
-//    NSDictionary *tweet = [tweets objectAtIndex:indexPath.row];
-//
-//    NSString *text = [tweet objectForKey: @"text"];
-//    NSString *name = [[tweet objectForKey: @"user"] objectForKey: @"name"];
-//    cell.textLabel.text = text;
-//    cell.detailTextLabel.text = [NSString stringWithFormat: @"by %@", name];
-//    NSString *imageUrl = [[tweet objectForKey: @"user"] objectForKey: @"profile_image_url"];
-//    NSData *data = [NSData dataWithContentsOfURL: [NSURL URLWithString: imageUrl]];
-//    cell.imageView.image = [UIImage imageWithData:data];
-//    return cell;
-//}
-
 -(UIImage *)selectedBackgroundImageForRowAtIndexPath:(NSIndexPath *)indexPath{
-    UIImage *background=[UIImage imageNamed:@"cellbg3click.png"];
+    UIImage *background=[UIImage imageNamed:@"cellbg4click.png"];
     return background;
 }
 
@@ -123,25 +132,33 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    //[self fetchTweets];
+    [self.refreshHeaderView setLastRefreshDate:nil];
     [self requestActivity];
-    UIImage *img = [UIImage imageNamed:@"cellbg3.png"];
+    UIImage *img = [UIImage imageNamed:@"cellbg4.png"];
 	[[self tableView] setBackgroundColor:[UIColor colorWithPatternImage:img]];
-    
     
     UINavigationBar *bar = [self.navigationController navigationBar];
     [bar setBackgroundImage:[UIImage imageNamed:@"Plain_green_background.jpg"] forBarMetrics:UIBarMetricsDefault];
 }
 
-/*- (void)viewDidLoad
- {
- [super viewDidLoad];
- // Do any additional setup after loading the view, typically from a nib.
- self.navigationItem.leftBarButtonItem = self.editButtonItem;
- 
- UIBarButtonItem *addButton = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemAdd target:self action:@selector(insertNewObject:)];
- self.navigationItem.rightBarButtonItem = addButton;
- }*/
+-(void) viewWillAppear:(BOOL)animated
+{
+    if(changes == YES)
+    {
+        [self getServices];
+        [self getActivities];
+        [self requestActivity];
+        [self.tableView scrollsToTop];
+        changes = NO;
+        animated = NO;
+    }
+    else
+    {
+        [self.tableView scrollsToTop];
+        animated = YES;
+    }
+
+}
 
 - (void)viewDidUnload
 {
@@ -149,32 +166,36 @@
     // Release any retained subviews of the main view.
 }
 
+- (void)reloadTableViewDataSource{
+    [self getServices];
+    [super reloadTableViewDataSource];
+	[super performSelector:@selector(dataSourceDidFinishLoadingNewData) withObject:nil afterDelay:2.0];
+	
+}
+- (void)dataSourceDidFinishLoadingNewData{
+	[super dataSourceDidFinishLoadingNewData];
+    [refreshHeaderView setCurrentDate];  //  should check if data reload was successful
+}
+
 - (BOOL)shouldAutorotateToInterfaceOrientation:(UIInterfaceOrientation)interfaceOrientation
 {
     return (interfaceOrientation != UIInterfaceOrientationPortraitUpsideDown);
-}
-
-- (void)insertNewObject:(id)sender
-{
-    if (!_objects) {
-        _objects = [[NSMutableArray alloc] init];
-    }
-    [_objects insertObject:[NSDate date] atIndex:0];
-    NSIndexPath *indexPath = [NSIndexPath indexPathForRow:0 inSection:0];
-    [self.tableView insertRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
 }
 
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {
     if ([segue.identifier isEqualToString:@"showTweet"]) {
         
-        NSInteger row = [[self tableView].indexPathForSelectedRow row];
-        NSDictionary *activity = [activities objectAtIndex:row];
+        //        NSInteger row = [[self tableView].indexPathForSelectedRow row];
+        //        NSDictionary *activity = [activities objectAtIndex:row];
         
         DetailViewController *detailController = segue.destinationViewController;
-        detailController.detailItem = activity;
+        detailController.row = [[self tableView].indexPathForSelectedRow row];
+        detailController.activities=activities;
+        detailController.delegate=self;
     }
 }
+
 
 #pragma mark - Table View
 
@@ -183,34 +204,17 @@
     return 1;
 }
 
-/*- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
- {
- return _objects.count;
- }
- 
- - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
- {
- UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"Cell"];
- 
- NSDate *object = [_objects objectAtIndex:indexPath.row];
- cell.textLabel.text = [object description];
- return cell;
- }*/
-
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
 {
     // Return NO if you do not want the specified item to be editable.
     return YES;
 }
 
-- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath
-{
-    if (editingStyle == UITableViewCellEditingStyleDelete) {
-        [_objects removeObjectAtIndex:indexPath.row];
-        [tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
-    } else if (editingStyle == UITableViewCellEditingStyleInsert) {
-        // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view.
-    }
+#pragma mark - DetailViewDelegate
+-(void)detailviewControllerBack:(DetailViewController *)controller{
+    NSIndexPath *indexPath=[NSIndexPath indexPathForRow:controller.row inSection:0];
+    [self.tableView selectRowAtIndexPath:indexPath animated:NO scrollPosition:UITableViewScrollPositionMiddle];
+    [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
 }
 
 @end
