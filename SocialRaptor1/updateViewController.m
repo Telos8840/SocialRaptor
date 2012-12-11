@@ -9,6 +9,7 @@
 #import "updateViewController.h"
 #import "projectViewController.h"
 #import "LaunchPage.h"
+#import "TableTab1.h"
 
 
 @interface updateViewController ()
@@ -30,7 +31,7 @@
 - (void)viewWillAppear:(BOOL)animated {
     //adds custom background to navbar and toolbar
     UIImage *navBarBG = [[UIImage imageNamed:@"navBarBG-rounded.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 0, 0, 0)];
-
+    
     [navbar setBackgroundImage:navBarBG forBarMetrics:UIBarMetricsDefault];
     
     [toolbar setBackgroundImage:[UIImage imageNamed:@"toolbarBG-rounded.png"] forToolbarPosition:UIToolbarPositionAny barMetrics:UIBarMetricsDefault];
@@ -86,7 +87,11 @@
     
     //counts the number of characters user has entered and outputs to label
     charCount = [updateTextView.text length];
-    updateLabel.text = [NSString stringWithFormat:@"%u", charCount];
+    updateLabel.text = [NSString stringWithFormat:@"%lu", (long)charCount];
+}
+
+-(void)textViewDidBeginEditing:(UITextView *)textView {
+    updateLabel.text = @"";
 }
 
 - (void)textViewDidEndEditing:(UITextView *)textView {
@@ -157,34 +162,50 @@ didFinishPickingMediaWithInfo:(NSDictionary *)info
 
 - (IBAction)postUpdate:(id)sender {
     updateText = [updateTextView text];
-    updateText = [updateText stringByReplacingOccurrencesOfString:@" " withString:@"_"];
+    //updateText = [updateText stringByReplacingOccurrencesOfString:@" " withString:@"_"];
     
     NSNumber *zero = [NSNumber numberWithInt:0];
     
-    //post update
-    NSString *post = [[NSString alloc] initWithFormat:@"%s%@","&service=all&content=",updateText];
-    NSString *postURL =
-    [NSString stringWithFormat:@"%s%@%s%@%@","http://webservices.socialraptor.com/publish/?uID=",user,"&auth=",passHash,post];
-        
-    jsonAuth = [NSData dataWithContentsOfURL:[NSURL URLWithString:postURL]];
-    jsonAuthentication = [NSJSONSerialization JSONObjectWithData:jsonAuth options:NSJSONReadingMutableContainers error:nil];
-      
-    NSNumber *codeValue = [jsonAuthentication valueForKey:@"code"];
-    NSLog(@"Code Value: %@",codeValue);
+    TableTab1 *tt = [[TableTab1 alloc]init];
+    [tt getServices];
     
-    if([codeValue isEqualToNumber:zero])
+    //post update
+    //NSString *post = [[NSString alloc] initWithFormat:@"%@",updateText];
+    NSString *postURL =
+    [NSString stringWithFormat:@"%s%@%s%@%s%@%s%@","http://webservices.socialraptor.com/publish/?uID=",user,"&auth=",passHash,"&service=",service,"&content=",updateText];
+    
+    //NSLog(@"%@", postURL);
+    
+    NSString *urlTextExcaped = [postURL stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding];
+    
+    jsonAuth = [NSData dataWithContentsOfURL:[NSURL URLWithString:urlTextExcaped]];
+    
+    if(jsonAuth == nil)
     {
-        NSString *message = [[NSString alloc] initWithFormat:@"Status posted!"];
-        imageView.image = nil;
-        updateTextView.text = @"";
-        [updateLabel setText:message];
-        NSLog(@"Update Text: %@", updateText);
-        [updateTextView resignFirstResponder];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Unable to Publish" message:@"You appear to be disconnected from the Internet" delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil, nil];
+        [alert show];
     }
-    else //post didn't go through
+    else
     {
-        UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Oops!" message:@"Your post didn't go through" delegate:nil cancelButtonTitle:@"Try Again" otherButtonTitles:nil, nil];
-        [message show];
+        jsonAuthentication = [NSJSONSerialization JSONObjectWithData:jsonAuth options:NSJSONReadingMutableContainers error:nil];
+        
+        NSNumber *codeValue = [jsonAuthentication valueForKey:@"code"];
+        //NSLog(@"Code Value: %@",codeValue);
+        
+        if([codeValue isEqualToNumber:zero])
+        {
+            NSString *message = [[NSString alloc] initWithFormat:@"Status posted!"];
+            imageView.image = nil;
+            updateTextView.text = @"";
+            [updateLabel setText:message];
+            //NSLog(@"Update Text: %@", updateText);
+            [updateTextView resignFirstResponder];
+        }
+        else //post didn't go through
+        {
+            UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Oops!" message:@"Your post didn't go through" delegate:nil cancelButtonTitle:@"Try Again" otherButtonTitles:nil, nil];
+            [message show];
+        }
     }
 }
 

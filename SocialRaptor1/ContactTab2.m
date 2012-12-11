@@ -38,7 +38,14 @@
         NSString *contactUrl = [NSString stringWithFormat:@"%s%@%s%@%s","http://webservices.socialraptor.com/contacts/?uID=",user,"&auth=",passHash,"&service="];
         
         jsonContacts = [NSData dataWithContentsOfURL:[NSURL URLWithString:[NSString stringWithFormat:@"%@%@",contactUrl,service]]];
-        jsonContactObjects = [NSJSONSerialization JSONObjectWithData:jsonContacts options:NSJSONReadingMutableContainers error:&error];
+        
+        if(jsonContacts == nil)
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Unable to Load Contacts" message:@"You appear to be disconnected from the Internet"  delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil, nil];
+            [alert show];
+        }
+        else
+            jsonContactObjects = [NSJSONSerialization JSONObjectWithData:jsonContacts options:NSJSONReadingMutableContainers error:&error];
     }
     else
     {
@@ -115,7 +122,10 @@
 
     [myCell.profpic.layer setMasksToBounds:YES];
     myCell.profpic.layer.cornerRadius = 8;
-    myCell.profpic.image = [UIImage imageWithData:data];
+    if(data)
+        myCell.profpic.image = [UIImage imageWithData:data];
+    else
+        myCell.profpic.image = [UIImage imageNamed:@"noperson.jpeg"];
     
     //[self.view addSubview:uiimv];
     
@@ -127,6 +137,15 @@
     {
         myCell.servicepic.image = [UIImage imageNamed:@"facebook.png"];
     }
+    else if([[[labelName objectAtIndex:indexPath.item] objectForKey:@"service"] isEqualToString:@"LinkedIn"])
+    {
+        myCell.servicepic.image = [UIImage imageNamed:@"linkedin.png"];
+    }
+    else if([[[labelName objectAtIndex:indexPath.item] objectForKey:@"service"] isEqualToString:@"GooglePlus"])
+    {
+        myCell.servicepic.image = [UIImage imageNamed:@"googleplus.png"];
+    }
+    
     return myCell;
 }
 

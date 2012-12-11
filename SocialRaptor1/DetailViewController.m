@@ -37,7 +37,7 @@
 {
     [super viewDidLoad];
     
-    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Newspaperbg.jpg"]];
+    UIImageView *bg = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"Newspaper.jpg"]];
     [self.view addSubview:bg];
     
     detailViews=[[NSMutableArray alloc] initWithCapacity:4];

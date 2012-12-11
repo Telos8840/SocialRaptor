@@ -13,6 +13,7 @@
 #import "SettingTab4.h"
 #import "DetailView.h"
 #import "LaunchPage.h"
+#import "DataLoader.h"
 #import <QuartzCore/QuartzCore.h>
 
 @interface TableTab1 ()
@@ -21,6 +22,18 @@
 
 
 @implementation TableTab1
+
+@synthesize loading;
+@synthesize noMoreResultsAvail;
+
+
+- (void)loadRequest
+{
+    DataLoader *loader = [[DataLoader alloc] init];
+    loader.delegate = self;
+    [loader loadData];
+}
+
 
 -(void) getServices
 {
@@ -47,7 +60,7 @@
         
         [self getServices];
         
-        url = [NSString stringWithFormat:@"%s%@%s%@%s","http://webservices.socialraptor.com/activity/?uID=",user,"&auth=",passHash,"&maxID=10000&offset=0&quantity=600&service="];
+        url = [NSString stringWithFormat:@"%s%@%s%@%s%d%s","http://webservices.socialraptor.com/activity/?uID=",user,"&auth=",passHash,"&maxID=0&offset=",offset,"&quantity=30&service="];
         
         NSURL *URL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", url, service]];
         
@@ -83,7 +96,11 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    return activities.count;
+    if (activities.count == 0) {
+        return 0;
+    } else {
+        return ([activities count]+1);
+    }
 }
 
 - (NSIndexPath *)indexPathForSelectedRow
@@ -103,18 +120,101 @@
     selectedBackgroundView.image=[self selectedBackgroundImageForRowAtIndexPath:indexPath];
     cell.selectedBackgroundView=selectedBackgroundView;
     
-    NSDictionary *activity = [activities objectAtIndex:indexPath.row];
+    if (indexPath.row == activities.count-3) {
+        if (!loading) {
+            loading = YES;
+            // loadRequest is the method that loads the next batch of data.
+            if(activities.count <2000)
+                [self loadRequest];
+            else
+                noMoreResultsAvail = true;
+        }
+    }
     
-    NSString *text = [activity objectForKey: @"content"];
-    NSString *author = [activity objectForKey: @"author"];
-    cell.textLabel.text = text;
-    cell.detailTextLabel.text = [NSString stringWithFormat: @"by %@", author];
-    
-    NSString *imageUrl = [activity objectForKey: @"imageURL"];
-    NSData *data = [NSData dataWithContentsOfURL: [NSURL URLWithString: imageUrl]];
-    [cell.imageView.layer setMasksToBounds:YES];
-    cell.imageView.layer.cornerRadius = 8;
-    cell.imageView.image = [UIImage imageWithData: data];
+    if(activities.count !=0)
+    {
+        if(indexPath.row < activities.count)
+        {
+            UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+            if(cell == nil) {
+                cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+            }
+            cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
+            cell.userInteractionEnabled = YES;
+            
+            NSDictionary *activity = [activities objectAtIndex:indexPath.row];
+            
+            NSString *text = [activity objectForKey: @"content"];
+            NSString *author = [activity objectForKey: @"author"];
+            cell.textLabel.text = text;
+            cell.textLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:13];
+            cell.detailTextLabel.text = [NSString stringWithFormat: @"by %@", author];
+            
+            NSString *imageUrl = [activity objectForKey: @"imageURL"];
+            NSData *data = [NSData dataWithContentsOfURL: [NSURL URLWithString: imageUrl]];
+            if(data==nil)
+            {
+                [cell.imageView.layer setMasksToBounds:YES];
+                cell.imageView.layer.cornerRadius = 8;
+                cell.imageView.image = [UIImage imageNamed:@"noperson.jpeg"];
+            }
+            else
+            {
+                [cell.imageView.layer setMasksToBounds:YES];
+                cell.imageView.layer.cornerRadius = 8;
+                if([[activity objectForKey:@"service"] isEqualToString:@"LinkedIn"])
+                    cell.imageView.image = [UIImage imageWithData:data scale:1.4];
+                else
+                    cell.imageView.image = [UIImage imageWithData:data scale:0.87];
+            }
+                        
+            UIImageView *selectedBackgroundView=[[UIImageView alloc] initWithFrame:cell.frame];
+            selectedBackgroundView.image=[self selectedBackgroundImageForRowAtIndexPath:indexPath];
+            cell.selectedBackgroundView=selectedBackgroundView;
+            return cell;
+        }
+        else if(indexPath.row == activities.count)
+        {
+            // The currently requested cell is the last cell.
+            if (!noMoreResultsAvail)
+            {
+                // If there are results available, display @"Loading More..." in the last cell
+                //UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+                activityView = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
+                activityView.frame = CGRectMake(41, 20, 0, 41);
+                //activityView.frame = CGRectMake(25.0f, 38.0f, 20.0f, 20.0f);
+                activityView.hidesWhenStopped = YES;
+                [cell addSubview:activityView];
+                [activityView startAnimating];
+                cell.imageView.image = [UIImage imageWithData:[NSData dataWithContentsOfFile:@""]];
+                cell.textLabel.text = @"            Loading More...";
+                cell.textLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:20];
+                cell.detailTextLabel.text = @"";
+                cell.accessoryType = UITableViewCellAccessoryNone;
+                cell.selectionStyle = UITableViewCellSelectionStyleNone;
+                cell.userInteractionEnabled = NO;
+                return cell;
+            }
+            else
+            {
+                // If there are no results available, display @"Loading More..." in the last cell
+              //  UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:CellIdentifier];
+                cell.imageView.image = [UIImage imageWithData:[NSData dataWithContentsOfFile:@""]];
+                cell.textLabel.text = @"(No More Results Available)";
+                cell.detailTextLabel.text = @"";
+                cell.accessoryType = UITableViewCellAccessoryNone;
+                cell.selectionStyle = UITableViewCellSelectionStyleNone;
+                cell.userInteractionEnabled = NO;
+                noMoreResultsAvail = false;
+                return cell;
+            }
+        }
+    }
+    else
+    {
+        [self.tableView reloadData];
+    }
+
     return cell;
 }
 
@@ -133,6 +233,10 @@
 {
     [super viewDidLoad];
     [self.refreshHeaderView setLastRefreshDate:nil];
+    
+    noMoreResultsAvail = NO;
+    //[self loadRequest];
+    
     [self requestActivity];
     UIImage *img = [UIImage imageNamed:@"cellbg4.png"];
 	[[self tableView] setBackgroundColor:[UIColor colorWithPatternImage:img]];
@@ -143,12 +247,14 @@
 
 -(void) viewWillAppear:(BOOL)animated
 {
-    if(changes == YES)
+    if(changes == YES && internetActive)
     {
+        offset = 0;
         [self getServices];
         [self getActivities];
         [self requestActivity];
         [self.tableView scrollsToTop];
+        //[self.tableView reloadData];
         changes = NO;
         animated = NO;
     }
@@ -209,6 +315,8 @@
     // Return NO if you do not want the specified item to be editable.
     return YES;
 }
+
+
 
 #pragma mark - DetailViewDelegate
 -(void)detailviewControllerBack:(DetailViewController *)controller{

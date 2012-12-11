@@ -53,34 +53,47 @@ bool didAnimate = NO;
 
 -(IBAction)signup
 {
-    
+    if(!internetActive)
+    {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Cannot Open the Web" message:@"You appear to be disconnected from the Internet"  delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil, nil];
+        [alert show];
+
+    }
 }
 
 -(IBAction)login {
     
-    //save username and password
-    [self savedata:self];
-    
-    user = username.text;
-    
-    //encrypt password with MD5 encryption
-    passHash = [password.text MD5];
-    
-    //authenticate user
-    NSString *auth = [NSString stringWithFormat:@"%s%@%s%@","http://webservices.socialraptor.com/auth/?uID=",username.text,"&auth=",passHash];
-    jsonAuth = [NSData dataWithContentsOfURL:[NSURL URLWithString:auth]];
-    jsonAuthentication = [NSJSONSerialization JSONObjectWithData:jsonAuth options:NSJSONReadingMutableContainers error:nil];
-    
-    if([[jsonAuthentication objectForKey:@"message"] isEqualToString:@"Invalid user ID or authentication."])
+    if(internetActive)
     {
-        UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Alert" message:@"Wrong username or password!" delegate:nil cancelButtonTitle:@"Try Again" otherButtonTitles:nil, nil];
-        [message show];
+        user = username.text;
+        
+        //encrypt password with MD5 encryption
+        passHash = [password.text MD5];
+        
+        //authenticate user
+        NSString *auth = [NSString stringWithFormat:@"%s%@%s%@","http://webservices.socialraptor.com/auth/?uID=",username.text,"&auth=",passHash];
+        jsonAuth = [NSData dataWithContentsOfURL:[NSURL URLWithString:auth]];
+        jsonAuthentication = [NSJSONSerialization JSONObjectWithData:jsonAuth options:NSJSONReadingMutableContainers error:nil];
+        
+        if([[jsonAuthentication objectForKey:@"message"] isEqualToString:@"Invalid user ID or authentication."])
+        {
+            UIAlertView *message = [[UIAlertView alloc] initWithTitle:@"Alert" message:@"Wrong username or password!" delegate:nil cancelButtonTitle:@"Try Again" otherButtonTitles:nil, nil];
+            [message show];
+        }
+        else //valid ID and password
+        {
+            //save username and password
+            [self savedata:self];
+            //go to activities page
+            [self performSegueWithIdentifier:@"Login" sender:self];
+        }
     }
-    else //valid ID and password
+    else
     {
-        //go to activities page
-        [self performSegueWithIdentifier:@"Login" sender:self];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Login Failed" message:@"You appear to be disconnected from the Internet"  delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil, nil];
+        [alert show];
     }
+    
 }
 
 

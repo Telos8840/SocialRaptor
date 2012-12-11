@@ -15,6 +15,8 @@
     NSArray *servicesArray;
     NSArray *miscArray;
 }
+//-(UIImage *)backgroundImageForRowAtIndexPath:(NSIndexPath *)indexPath;
+
 @end
 
 @implementation SettingTab4
@@ -41,8 +43,10 @@
     servicesArray = [[NSArray alloc] init];
     miscArray = [[NSArray alloc] init];
     
-    UIImageView *boxBackView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"green_background.gif"]];
+    UIImageView *boxBackView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"greenpaper.jpg"]];
     [self.tableView setBackgroundView:boxBackView];
+    
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -50,6 +54,21 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+//-(UIImage *)backgroundImageForRowAtIndexPath:(NSIndexPath *)indexPath{
+//    
+//    if (indexPath.section == 0 && indexPath.row == 0) {
+//        UIImage *background=[[UIImage imageNamed:@"table_cell_top.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 70, 0, 64)];
+//        return background;
+//    }else if(indexPath.section ==0 && indexPath.row==2){
+//        UIImage *background=[[UIImage imageNamed:@"table_cell_bottom.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 34, 0, 35)];
+//        return background;
+//    }else{
+//        UIImage *background=[[UIImage imageNamed:@"table_cell_mid.png"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 30, 0, 30)];
+//        return background;
+//    }
+//}
+
 
 #pragma mark - LogOut
 
@@ -79,7 +98,7 @@
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
-    return 3;
+    return 2;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -92,11 +111,7 @@
     }
     else if(section == 1)
     {
-        return 1;
-    }
-    else if(section == 2)
-    {
-        miscArray = [NSArray arrayWithObjects: @"About", @"Terms of Use", nil];
+        miscArray = [NSArray arrayWithObjects: @"About", nil];
         return [miscArray count];
     }
     return 0;
@@ -106,14 +121,18 @@
 {
     UITableViewCell *cell;
     static NSString *CellIdentifier;
+    
     if(indexPath.section ==0)
     {
         CellIdentifier = @"settingCell";
         cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
+//        
+//        UIImageView *backgroundView=[[UIImageView alloc] initWithFrame:cell.frame];
+//        backgroundView.image=[self backgroundImageForRowAtIndexPath:indexPath];
+//        cell.backgroundView=backgroundView;
         
         // Configure the cell...
         cell.textLabel.text = [servicesArray objectAtIndex:indexPath.row];
-        //NSLog(@"%d", indexPath.row);
         
         if([self getCheckedForIndex:indexPath.row]==YES)
         {
@@ -128,24 +147,10 @@
     }
     else if(indexPath.section == 1)
     {
-        CellIdentifier = @"Pref";
-        cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-        cell.textLabel.text = @"Number of Feeds";
-        UITextField *textField = [[UITextField alloc] init];
-        // Add general UITextAttributes if necessary
-        textField.placeholder = @"@JohnAppleseed";
-        textField.keyboardType = UIKeyboardTypeNumberPad;
-        textField.returnKeyType = UIReturnKeyDone;
-        textField.enablesReturnKeyAutomatically = YES;
-        [textField setEnabled:YES];
-        [cell addSubview:textField];
-        [textField setText:@"600"];
-    }
-    else if(indexPath.section == 2)
-    {
         CellIdentifier = @"miscCell";
         cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier forIndexPath:indexPath];
-        
+        UIImage *img = [UIImage imageNamed:@"refresh.jpg"];
+        [[self tableView] setBackgroundColor:[UIColor colorWithPatternImage:img]];
         // Configure the cell...
         cell.textLabel.text = [miscArray objectAtIndex:indexPath.row];
         //NSLog(@"%d", indexPath.row);
@@ -187,13 +192,45 @@
 	if(section == 0) {
 		sectionHeader = @"Services";
 	}
-	if(section == 1) {
-		sectionHeader = @"Preferences";
-	}
-    if(section == 2) {
+    if(section == 1) {
         sectionHeader = @"Miscellaneous";
     }
 	return sectionHeader;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+//    UIView *customTitleView = [ [UIView alloc] initWithFrame:CGRectMake(10, 0, 300, 44)];
+//    UILabel *titleLabel = [ [UILabel alloc] initWithFrame:CGRectMake(0, 0, 300, 44)];
+//    if(section == 0) {
+//		titleLabel.text = @"Services";
+//	}
+//    if(section == 1) {
+//        titleLabel.text = @"Miscellaneous";
+//    }
+//    titleLabel.textColor = [UIColor blackColor];
+//    titleLabel.backgroundColor = [UIColor clearColor];
+//    [customTitleView addSubview:titleLabel];
+//    return customTitleView;
+    
+    NSString *sectionTitle = [self tableView:tableView titleForHeaderInSection:section];
+    if (sectionTitle == nil) {
+        return nil;
+    }
+    
+    UILabel *label = [[UILabel alloc] init];
+    label.frame = CGRectMake(20, 8, 320, 20);
+    label.backgroundColor = [UIColor clearColor];
+    label.textColor = [UIColor whiteColor];
+    label.shadowColor = [UIColor grayColor];
+    label.shadowOffset = CGSizeMake(-1.0, 1.0);
+    label.font = [UIFont boldSystemFontOfSize:16];
+    label.text = sectionTitle;
+    
+    UIView *view = [[UIView alloc] init];
+    [view addSubview:label];
+    
+    return view;
 }
 
 

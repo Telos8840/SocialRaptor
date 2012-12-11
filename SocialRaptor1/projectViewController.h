@@ -31,7 +31,7 @@
 
 @end
 
-NSArray *jsonObjects;
+NSMutableArray *jsonObjects;
 NSArray *jsonContactObjects;
 NSDictionary *jsonAuthentication;
 NSData *jsonData;

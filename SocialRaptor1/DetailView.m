@@ -66,10 +66,18 @@
         NSString * timeStampString =[activity objectForKey:@"dateTime"];
         NSTimeInterval _interval=[timeStampString doubleValue];
         NSDate *date = [NSDate dateWithTimeIntervalSince1970:_interval];
-        NSDateFormatter *_formatter=[[NSDateFormatter alloc]init];
-        [_formatter setDateFormat:@"EEEE, MMM dd, yyyy @HH:mm:ss"];
-        NSString *_date=[_formatter stringFromDate:date];
-        tweetDate.text = [NSString stringWithFormat:@"%@", _date];
+        
+        NSTimeZone *tz = [NSTimeZone localTimeZone];
+        NSInteger seconds = [tz secondsFromGMTForDate: date];
+        NSDate *newDate = [NSDate dateWithTimeInterval: seconds sinceDate: date];
+
+        NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+        [dateFormatter setDateFormat:@"EEEE, MMM dd, yyyy @hh:mm:ss a"];
+
+        NSString* dateString = [dateFormatter stringFromDate:newDate];
+        
+//        NSString *_date=[dateFormatter stringFromDate:date];
+        tweetDate.text = [NSString stringWithFormat:@"%@", dateString];
         
         
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -79,7 +87,10 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 [profileImage.layer setMasksToBounds:YES];
                 profileImage.layer.cornerRadius = 8;
-                profileImage.image = [UIImage imageWithData:data];
+                if([imageUrl isEqualToString:@""]||data==nil)
+                    profileImage.image = [UIImage imageNamed:@"noperson.jpeg"];
+                else
+                    profileImage.image = [UIImage imageWithData:data];
             });
         });
     }

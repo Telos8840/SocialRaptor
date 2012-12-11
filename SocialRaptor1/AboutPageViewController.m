@@ -1,23 +1,22 @@
 //
-//  WebViewController.m
+//  AboutPageViewController.m
 //  SocialRaptor1
 //
-//  Created by Rachael Koestartyo on 10/31/12.
+//  Created by Rachael Koestartyo on 12/1/12.
 //  Copyright (c) 2012 CS480. All rights reserved.
 //
 
-#import "WebViewController.h"
+#import "AboutPageViewController.h"
 
-@interface WebViewController ()
+@interface AboutPageViewController ()
 
 @end
 
-@implementation WebViewController
-@synthesize webView, window;
+@implementation AboutPageViewController
 
-- (void)webViewDidFinishLoad:(UIWebView *)webview
+-(IBAction)close:(id)sender
 {
-    //[webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"http://google.com"]]];
+    [self dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -33,8 +32,6 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
-    [webView loadRequest:[NSURLRequest requestWithURL:[NSURL URLWithString:@"http://beta.socialraptor.com"]]];
-    webView.scalesPageToFit = YES;
 }
 
 - (void)didReceiveMemoryWarning

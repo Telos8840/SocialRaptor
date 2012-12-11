@@ -11,6 +11,7 @@
 #import "TableTab1.h"
 #import "projectViewController.h"
 #import "SettingTab4.h"
+#import "LaunchPage.h"
 
 
 @implementation PullToRefreshTableViewController
@@ -26,7 +27,9 @@
 
 	 if (refreshHeaderView == nil) {
 		 refreshHeaderView = [[EGORefreshTableHeaderView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - self.tableView.bounds.size.height, 320.0f, self.tableView.bounds.size.height)];
-		 refreshHeaderView.backgroundColor = [UIColor colorWithRed:226.0/255.0 green:231.0/255.0 blue:237.0/255.0 alpha:1.0];
+         UIImage *img = [UIImage imageNamed:@"refresh.jpg"];
+         [[self refreshHeaderView] setBackgroundColor:[UIColor colorWithPatternImage:img]];
+		 //refreshHeaderView.backgroundColor = [UIColor colorWithRed:226.0/255.0 green:231.0/255.0 blue:237.0/255.0 alpha:1.0];
 		 //refreshHeaderView.bottomBorderThickness = 1.0;
 		 [self.tableView addSubview:refreshHeaderView];
 		 self.tableView.showsVerticalScrollIndicator = YES;
@@ -64,13 +67,21 @@
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate{
 	if (scrollView.contentOffset.y <= - 65.0f && !_reloading) {
-		_reloading = YES;
-		[self reloadTableViewDataSource];
-		[refreshHeaderView setState:EGOOPullRefreshLoading];
-		[UIView beginAnimations:nil context:NULL];
-		[UIView setAnimationDuration:0.2];
-		self.tableView.contentInset = UIEdgeInsetsMake(60.0f, 0.0f, 0.0f, 0.0f);
-		[UIView commitAnimations];
+		if(internetActive)
+        {
+            _reloading = YES;
+            [self reloadTableViewDataSource];
+            [refreshHeaderView setState:EGOOPullRefreshLoading];
+            [UIView beginAnimations:nil context:NULL];
+            [UIView setAnimationDuration:0.2];
+            self.tableView.contentInset = UIEdgeInsetsMake(60.0f, 0.0f, 0.0f, 0.0f);
+            [UIView commitAnimations];
+        }
+        else
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Unable to Refresh" message:@"You appear to be disconnected from the Internet"  delegate:nil cancelButtonTitle:@"OK" otherButtonTitles: nil, nil];
+            [alert show];
+        }
 	}
 }
 
@@ -91,26 +102,44 @@
 
 - (void) reloadTableViewDataSource
 {
-    NSError *error;
-    TableTab1 *tt = [[TableTab1 alloc]init];
-    [tt getServices];
-    
-    url = [NSString stringWithFormat:@"%s%@%s%@%s","http://webservices.socialraptor.com/activity/?uID=",user,"&auth=",passHash,"&maxID=10000&offset=0&quantity=600&service="];
-    
-    NSURL *URL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", url, service]];
-    
-    jsonData = [NSData dataWithContentsOfURL:URL options:NSDataReadingUncached error:&error];
-    
-    jsonObjects = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:&error];
-	dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+    if(internetActive==true)
+    {
+        NSError *error;
+        TableTab1 *tt = [[TableTab1 alloc]init];
+        [tt getServices];
         
-        activities = [jsonObjects objectAtIndex: 1];
-        //NSLog(@"%@",[jsonObjects objectAtIndex: 1]);
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self.tableView reloadData];
-        });
-    });
-    [self dataSourceDidFinishLoadingNewData];
+        url = [NSString stringWithFormat:@"%s%@%s%@%s","http://webservices.socialraptor.com/activity/?uID=",user,"&auth=",passHash,"&maxID=0&offset=0&quantity=30&service="];
+        
+        
+        NSURL *URL = [NSURL URLWithString:[NSString stringWithFormat:@"%@%@", url, service]];
+        jsonData = [NSData dataWithContentsOfURL:URL options:NSDataReadingUncached error:&error];
+        
+        if(jsonData == nil)
+        {
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Unable to Refresh" message:@"You appear to be disconnected from the Internet"  delegate:self cancelButtonTitle:@"OK" otherButtonTitles: nil, nil];
+            [alert show];
+        }
+        else
+        {
+            jsonObjects = [NSJSONSerialization JSONObjectWithData:jsonData options:NSJSONReadingMutableContainers error:&error];
+            dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                
+                activities = [jsonObjects objectAtIndex: 1];
+                //NSLog(@"%@",[jsonObjects objectAtIndex: 1]);
+                dispatch_async(dispatch_get_main_queue(), ^{
+                    [self.tableView reloadData];
+                });
+            });
+        }
+        offset = 0;
+        [self dataSourceDidFinishLoadingNewData];
+    }
+    else
+    {
+        [self dataSourceDidFinishLoadingNewData];
+    }
+        
+    
 }
 
 

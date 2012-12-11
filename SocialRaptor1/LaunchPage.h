@@ -8,11 +8,18 @@
 
 #import <UIKit/UIKit.h>
 
+@class Reachability;
+
 @interface LaunchPage : UIViewController
 {
     IBOutlet UIImageView *imageView;
+    Reachability* internetReachable;
+    Reachability* hostReachable;
+    
 }
-
+-(void) checkNetworkStatus:(NSNotification *)notice;
 @end
 
 NSUserDefaults *defaults;
+bool internetActive;
+bool hostActive;
